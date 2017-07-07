@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{%block head %}
+<script>
+	$(function () {
+		var canSubmit = true
+		$user_name = $('#user_name');
+		$pwd = $('#pwd');
+		$cpwd = $('#cpwd');
+		$user_name.siblings('span').show()
+//		验证用户名
+		$user_name.blur(function () {
+			user_len = $user_name.val().length
+			if(user_len > 20 | user_len < 5){
+				canSubmit = false
+				$user_name.siblings('span').html('请输入5-20位合法的用户名').show()
+			}else {
+				$.get('/user/invalidate_username/', {'uname': $user_name.val()}, function (data) {
+					if(data.data == '0'){
+						$user_name.siblings('span').hide()
+					}else {
+						canSubmit = false
+						$user_name.siblings('span').html('用户名已经存在了！').show()
+					}
+				})
+			}
+		}) 
+//		验证密码
+		$pwd.blur(function () {
+			pwd_len = $pwd.val().length
+			if(pwd_len > 12 | pwd_len < 6){
+				$pwd.siblings('span').html('请输入6-12位合法的用户名').show()
+				canSubmit = false
+			}else {
+				$pwd.siblings('span').html('')
+			}
+		})
+//验证两次输入的密码是否一致
+		$cpwd.blur(function () {
+			pwd = $pwd.val()
+			cpwd = $cpwd.val()
+			if(pwd != cpwd){
+				canSubmit = false
+				$cpwd.siblings('span').html('两次输入的密码不一致，请核对后再输入').show()
+			}else {
+				$cpwd.siblings('span').html('').hide()
+			}
+		})
+//	提交时候需要验证一下
+		$('form').submit(function () {
+			canSubmit = true
+			$user_name.blur()
+			$pwd.blur()
+			$cpwd.blur()
+			console.log(canSubmit)
+			return canSubmit
+		})
+	})
+</script>
+{%endblock head%}
+{%block body%}
+	<div class="register_con">
+		<div class="l_con fl">
+			<a class="reg_logo"><img src="/static/images/logo02.png"></a>
+			<div class="reg_slogan">足不出户  ·  新鲜每一天</div>
+			<div class="reg_banner"></div>
+		</div>
+
+		<div class="r_con fr">
+			<div class="reg_title clearfix">
+				<h1>用户注册</h1>
+				<a href="/user/login">登录</a>
+			</div>
+			<div class="reg_form clearfix">
+
+				<form action="/user/register_handle/" method="POST">
+					{% csrf_token %}
+				<ul>
+					<li>
+						<label>用户名:</label>
+						<input type="text" name="user_name" id="user_name">
+						<span class="error_tip user_error">{{ context.user_error|default:'' }}</span>
+					</li>					
+					<li>
+						<label>密码:</label>
+						<input type="password" name="pwd" id="pwd">
+						<span class="error_tip pwd_error"></span>
+					</li>
+					<li>
+						<label>确认密码:</label>
+						<input type="password" name="cpwd" id="cpwd">
+						<span class="error_tip cpwd_error"></span>
+					</li>
+					<li>
+						<label>邮箱:</label>
+						<input type="text" name="email" id="email">
+						<span class="error_tip mail_error" ></span>
+					</li>
+					<li class="agreement">
+						<input type="checkbox" name="allow" id="allow" checked="checked">
+						<label>同意”天天生鲜用户使用协议“</label>
+						<span class="error_tip allow_error"></span>
+					</li>
+					<li class="reg_sub">
+						<input type="submit" value="注 册" name="">
+					</li>
+				</ul>				
+				</form>
+			</div>
+
+		</div>
+
+	</div>
+{%endblock body%}
