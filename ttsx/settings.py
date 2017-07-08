@@ -39,9 +39,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ttsx_user',
     'ttsx_goods',
+    'tinymce',
 )
 
-from django.contrib.sessions.middleware import SessionMiddleware
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -111,4 +111,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
-MEDIA_ROOT= os.path.join()
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+
+# 以下为富文本编辑器的配置
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'width': 600,
+    'height': 400,
+}

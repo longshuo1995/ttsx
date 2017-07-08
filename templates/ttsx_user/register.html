@@ -15,7 +15,7 @@
 				canSubmit = false
 				$user_name.siblings('span').html('请输入5-20位合法的用户名').show()
 			}else {
-				$.get('/user/invalidate_username/', {'uname': $user_name.val()}, function (data) {
+				$.post('/user/invalidate_username/', {'csrfmiddlewaretoken':$('input').eq(0).val(),'uname': $user_name.val()}, function (data) {
 					if(data.data == '0'){
 						$user_name.siblings('span').hide()
 					}else {

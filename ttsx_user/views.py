@@ -42,7 +42,8 @@ def register_handle(request):
 
 
 def register_valide(request):
-    uname = request.GET.get('uname')
+    uname = request.POST.get('uname')
+    csrf = request.POST.get('csrfmiddlewaretoken')
     data = UserInfo.objects.filter(uname=uname).count()
     context = {'data': data}
     return JsonResponse(context)
@@ -88,6 +89,7 @@ def login_handle(request):
                 pass
             response = redirect(url_path)
             request.session['luid'] = result[0].id
+            request.session['uname'] = result[0].uname
             if ujz == 'user_remember':
                 request.session['uid'] = result[0].id
             else:
@@ -116,6 +118,7 @@ def center(request):
 @user_islogin
 def order(request):
     context = {}
+    context['top'] = '1'
     return render(request, 'ttsx_user/user_center_order.html', {'context': context})
 
 
@@ -142,10 +145,11 @@ def site(request):
             print('保存完毕~~')
 
         else:
-            context['user'] = user
+            pass
     except Exception as e:
         print(e)
         pass
+    context['user'] = user
     return render(request, 'ttsx_user/user_center_site.html', {'context':context})
 
 
