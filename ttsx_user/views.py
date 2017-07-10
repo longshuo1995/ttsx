@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from .user_decorators import user_islogin
+from ttsx_goods.models import GoodsInfo
 
 from .models import UserInfo
 from hashlib import sha1
@@ -107,11 +108,19 @@ def center(request):
     context['top'] = '1'
     print('center 开始处理')
     context['title'] = '天天生鲜-用户中心哈哈哈'
+    history_see = request.COOKIES.get('history_see', '').split(',')
+    print(history_see)
+    history_list = []
     try:
         user = UserInfo.objects.get(pk=request.session['luid'])
         context['user'] = user
+        for item in history_see:
+            if item.strip(' ') != '':
+                history_list.append(GoodsInfo.objects.get(pk=item))
     except Exception as e:
         pass
+    context['history_see'] = history_list
+    print(history_list)
     return render(request, 'ttsx_user/user_center_info.html', {'context': context})
 
 

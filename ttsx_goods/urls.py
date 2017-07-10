@@ -5,5 +5,6 @@ from .views import *
 urlpatterns = [
     url('^goods_list(\d+)_(\d+)/', goods_list),
     url('^goods_detail(\d+)/', goods_detail),
+    url('^query/', query),
     url(r'^', index),
 ]
